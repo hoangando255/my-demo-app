@@ -1,0 +1,61 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2> Danh sách người dùng </h2>
+    <button class="btn btn-primary" (click)="addUser()" data-bs-toggle="modal" data-bs-target="#userModal">
+      + Thêm mới </button>
+  </div>
+  <table class="table table-hover border">
+    <thead class="table-light">
+      <tr>
+        <th> ID </th>
+        <th> Họ tên </th>
+        <th> Email </th>
+        <th> Chi tiết </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td> {{user.id}}</td>
+        <td> {{user.name}}</td>
+        <td> {{user.email}}</td>
+        <td>
+           <div class="d-flex">
+             <button class="btn btn-sm btn-info" (click)="viewUser(user)" data-bs-toggle="modal" data-bs-target="#userModal"> Xem </button>
+             <button class="btn btn-sm btn-info ms-2" (click)="editUser(user)" data-bs-toggle="modal" data-bs-target="#userModal"> Sửa </button>
+             <button class="btn btn-sm btn-danger ms-2"(click)="deleteUser(user.id)"> Xóa </button>
+           </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="isLoading" class="text-center" >
+    <div class="spinner-border text-primary" role="status"></div>
+    <p> Đang tải dữ liệu...............</p>
+  </div>
+</div>
+
+<div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"> {{ modalTitle }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="modalMode === 'view'">
+          <p><strong> Họ và tên: </strong> {{selectedUser.name}}</p>
+          <p><strong> Email: </strong> {{selectedUser.email}}</p>
+        </div>
+
+        <div *ngIf="modalMode ==='add' || modalMode === 'edit'">
+          <input type="text" [(ngModel)]="selectedUser.name" class="form-control mb-2" placeholder="Nhập tên">
+          <input type="email" [(ngModel)]="selectedUser.email" class="form-control " placeholder="Nhập email">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Đóng </button>
+        <button type="button" class="btn btn-primary" *ngIf="modalMode !== 'view'" (click)="saveData()">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+</div>
