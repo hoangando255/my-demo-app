@@ -1,0 +1,22 @@
+.product-card{
+  transition: all 0.3s ease;
+  border-radius: 12px;
+
+  &:hover{
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15) !important;
+  }
+}
+
+.list-group-item-action{
+  cursor: pointer;
+  transition: 0.2s;
+  &:hover{
+    background-color: #f8f9fa;
+    padding-left: 25px
+  }
+}
+btn-link:hover{
+  transform: scale(1.2);
+  transition: 0.2s;
+}

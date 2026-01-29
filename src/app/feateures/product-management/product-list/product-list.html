@@ -1,0 +1,140 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <h2 class="text-primary fw-bold">
+      <i class="bi bi-shop"></i> CỬA HÀNG DEMO
+    </h2>
+    <div class="position-relative">
+      <button class="btn btn-dark rounded-pill px-4" (click)="openCart()">
+        <i class="bi bi-cart 3"></i> Giỏ hàng
+        <span class="badge bg-danger ms-1"> {{cartService.getCartCount()}}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <aside class="col-md-3 mb-4">
+      <div class="card border-0 shadow-sm p-3">
+      <h4 class="fw-bold mb-3"><i class="bi bi-filter-left"></i> Danh mục </h4>
+      <div class="list-group list-group-flush">
+        <button (click)="filterProducts('Tất cả')"
+                [class.active]="selectedCategory === 'Tất cả'"
+                class="list-group-item list-group-item-action border-0 rounded mb-1">
+          Tất cả
+        </button>
+        <button (click)="filterProducts('smartphones')"
+                [class.active]="selectedCategory === 'smartphones'"
+                class="list-group-item list-group-item-action border-0 rounded mb-1">
+          Điện thoại
+        </button>
+        <button (click)="filterProducts('tablets')"
+                [class.active]="selectedCategory === 'tablet'"
+                class="list-group-item list-group-item-action border-0 rounded mb-1">
+          iPad
+        </button>
+        <button (click)="filterProducts('accessory')"
+                [class.active]="selectedCategory === 'accessory'"
+                class="list-group-item list-group-item-action border-0 rounded mb-1">
+          Phụ Kiện
+        </button>
+      </div>
+        <h5 class="fw-bold mt-4 mb-3"><i class="bi bi-cash-stack"></i> Khoảng giá: {{maxPrice}} </h5>
+        <div class="px-2">
+          <input type="range" class="form-range" min="0" max="2000" step="50" [(ngModel)]="maxPrice" (input)="filterProducts()">
+          <div class="d-flex justify-content-between small">
+            <span> $0 </span>
+            <span> $2000 </span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="col-md-9">
+      <div *ngIf="isLoading" class="text-center-my-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2"> Đang lấy hàng từ kho....</p>
+      </div>
+
+      <div class="row" *ngIf="!isLoading">
+        <div class="col-md-4 mb-4" *ngFor="let product of filteredProducts">
+          <div class="card h-100 shadow-sm border-0 product-card overflow-hidden">
+            <div class="p-4 text-center bg-white" style="height: 220px;">
+              <img [src]="product.thumbnail" class="img-fluid h-100" [alt]="product.name" style="object-fit: contain;">
+            </div>
+
+            <div class="card-body d-flex flex-column">
+              <p class="text-uppercase text-muted extra-small mb-1" style="font-size: 0.7rem;">{{product.category}}</p>
+              <h6 class="card-title text-truncate fw-bold mb-2" [title]="product.name">{{product.name}}</h6>
+
+              <div class="mt-auto">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="text-danger fs-5 fw-bold">${{product.price}}</span>
+                  <div class="text-warning small">
+                    <i class="bi border-start-fill"></i> 4.5
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sw w-100 mt-3 rounded-pill" (click)="addToCart(product)">
+                <i class="bi bi-cart-plus"></i>
+                Thêm vào giỏ hàng
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title fw-bold"><i class="bi bi-cart3"></i> Giỏ hàng</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="cartService.getItems().length === 0" class="text-center py-5">
+          <i class="bi bi-cart-x fs-1 text-muted"></i>
+          <p class="mt-2 text-muted">Chưa có sản phẩm nào trong giỏ hàng</p>
+        </div>
+
+        <div *ngFor="let item of cartService.getItems()" class="d-flex align-items-center border-bottom py-3">
+          <img [src]="item.thumbnail" style="width: 70px; height: 70px; object-fit: contain;" class="me-3 rounded bg-light">
+          <div class="flex-grow-1">
+            <h6 class="mb-0 fw-bold">{{ item.name }}</h6>
+            <small class="text-danger fw-bold">${{ item.price }}</small>
+          </div>
+
+          <div class="d-flex align-items-center border rounded-pill px-2 py-1 bg-light">
+            <button class="btn btn-sm btn-link text-dark p-0 border-0" (click)="cartService.decrementQuantity(item.id)">
+              <i class="bi bi-dash-circle fs-5"></i>
+            </button>
+            <span class="mx-3 fw-bold" style="min-width: 20px; text-align: center;">
+              {{ item.quantity }}
+            </span>
+            <button class="btn btn-sm btn-link text-dark p-0 border-0" (click)="cartService.incrementQuantity(item.id)">
+              <i class="bi bi-plus-circle fs-5"></i>
+            </button>
+          </div>
+
+          <div class="ms-4 fw-bold text-primary" style="min-width: 80px; text-align: right;">
+            ${{ item.price * item.quantity }}
+          </div>
+          <button class="btn btn-sm text-danger ms-3" (click)="cartService.removeItem(item.id)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 bg-light d-flex justify-content-between">
+        <div class="fs-4 fw-bold">Tổng cộng: <span class="text-danger">${{ cartService.getTotalPrice() }}</span></div>
+        <div>
+          <button type="button" class="btn btn-outline-secondary rounded-pill px-4 me-2" data-bs-dismiss="modal">Mua thêm</button>
+          <button type="button" class="btn btn-primary rounded-pill px-4" (click)="goToCheckout()">Thanh toán</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
