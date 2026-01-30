@@ -37,6 +37,11 @@ export class CartService{
       this.removeItem(id);
     }
   }
+
+  getItemInCart(productId: number){
+    return this.items.find(item => item.id === productId);
+  }
+
   removeItem(id: number){
     this.items = this.items.filter(i => i.id !== id);
   }
