@@ -5,9 +5,13 @@ import {HttpClient} from '@angular/common/http';
   providedIn: 'root'
 })
 export class ProductService {
-  private apiUrl = 'https://dummyjson.com/products/category/smartphones';
+  private apiUrl = 'product-list';
+
   constructor(private http: HttpClient){}
   getProducts(){
     return this.http.get<any>(this.apiUrl);
+  }
+  addProduct(product: any){
+    return this.http.post(this.apiUrl, product);
   }
 }
